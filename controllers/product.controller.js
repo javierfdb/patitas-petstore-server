@@ -1,17 +1,16 @@
 import {handleErrors} from "../database/errors.js";
 import {productosModelo} from "../models/product.model.js"; 
-
+import format from "pg-format";
 
 const getAllProducts = async (req, res) => {
-
-    const {limit} = req.query;
+    const {sort, limit } = req.query;
     try {
-        const resultado =  await productosModelo.getProductos(limit);
+        const resultado =  await productosModelo.getProductos({sort, limit});
         return res.json({ok:true, resultado});
       } catch (error) {
         console.log(error);
         const { status, message } = handleErrors(error.code);
-        return res.status(status).json({ ok: false, result: message }); //respuesta del servidor
+        return res.status(status).json({ ok: false, result: message }); 
       }
 }
 

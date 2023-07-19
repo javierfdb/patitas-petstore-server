@@ -8,7 +8,7 @@ import productRouter from './routes/product.route.js';
 
 app.use(cors());
 app.use(express.json());
-app.use('/api', productRouter)
+app.use('/api', productRouter);
 
 const PORT = process.env.PORT || 5000;
 

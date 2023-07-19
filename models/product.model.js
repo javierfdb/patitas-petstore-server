@@ -1,14 +1,10 @@
 import { pool } from "../database/connection.js";
+import format from "pg-format";
 
-const getProductos = async(limit) => {
-
-    if(limit) {
-        const resultado = "SELECT * FROM productos LIMIT $1";
-        const {rows} =  await pool.query(resultado, [limit]);
-        return rows;
-    }
-
-    const {rows} = await pool.query("select * from productos;");
+const getProductos = async ({sort, limit}) => {
+    const query = "SELECT * FROM productos ORDER BY %s %s";
+    const finalQuery = format(query, Object.keys(sort)[0], sort.titulo);
+    const {rows} = await pool.query(finalQuery );
     return rows;
 }
 
