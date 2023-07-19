@@ -1,11 +1,11 @@
 import {handleErrors} from "../database/errors.js";
 import {productosModelo} from "../models/product.model.js"; 
-import format from "pg-format";
+
 
 const getAllProducts = async (req, res) => {
-    const {sort, limit } = req.query;
+    const {sort, limit = 6, page = 1, filters } = req.query;
     try {
-        const resultado =  await productosModelo.getProductos({sort, limit});
+        const resultado =  await productosModelo.getProductos({ sort, limit, page, filters });
         return res.json({ok:true, resultado});
       } catch (error) {
         console.log(error);

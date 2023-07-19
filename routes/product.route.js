@@ -1,6 +1,5 @@
 import { Router } from "express";
-import {productsController} from "../controllers/product.controller.js"
-import format from "pg-format";
+import {productsController} from "../controllers/product.controller.js";
 
 const router = Router();
 

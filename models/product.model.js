@@ -1,16 +1,60 @@
 import { pool } from "../database/connection.js";
 import format from "pg-format";
 
-const getProductos = async ({sort, limit}) => {
-    const query = "SELECT * FROM productos ORDER BY %s %s";
-    const finalQuery = format(query, Object.keys(sort)[0], sort.titulo);
+const getProductos = async ({ sort, limit, page, filters }) => {
+
+    let query = "SELECT * FROM productos";
+    const arrayValues = [];
+
+    if (filters) {
+        query += " WHERE ";
+        const propertys = Object.keys(filters);
+        const operatorsQueryObjet = {
+           $eq: "=",
+           $gt: ">",
+           $gte: ">=",
+           $lt: "<",
+           $lte: "<=",
+           $ne: "!=",
+        };
+        for (const key in filters) {
+           const name = key;
+           const object = filters[name];
+           const operator = Object.keys(object)[0];
+           const value = object[operator];
+           query += "%s %s '%s'";
+           arrayValues.push(name, operatorsQueryObjet[operator], value);
+           if (key !== propertys[propertys.length - 1]) {
+              query += " AND ";
+           }
+        }
+        console.log(arrayValues);
+     }
+
+    if(sort) {
+        query += " ORDER BY %s %s";
+        const property = Object.keys(sort)[0];
+        arrayValues.push(property, sort[property]);
+    }
+
+    if(limit) {
+        query += " LIMIT %s";
+        arrayValues.push(limit);  
+    }
+
+    if(page) {
+        query += " OFFSET %s";
+        arrayValues.push((page - 1) * limit);
+    }
+
+    const finalQuery = format(query, ...arrayValues);
     const {rows} = await pool.query(finalQuery );
     return rows;
 }
 
 const getOneProduct = async(id) => {
     const datoProducto = "SELECT * FROM productos WHERE id = $1";
-    const {rows} =  await pool.query(datoProducto, [id]);
+    const {rows} =  await pool.query(datoProducto, [id]); 
     if(rows.length === 0) {
         throw ({code: "404"});
     }
