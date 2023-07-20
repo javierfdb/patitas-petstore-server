@@ -6,7 +6,7 @@ const getAllProducts = async (req, res) => {
     const {sort, limit = 6, page = 1, filters } = req.query;
     try {
         const resultado =  await productosModelo.getProductos({ sort, limit, page, filters });
-        return res.json({ok:true, resultado});
+        return res.json({resultado});
       } catch (error) {
         console.log(error);
         const { status, message } = handleErrors(error.code);

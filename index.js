@@ -80,6 +80,20 @@ app.get("/dashboard", verifyToken, async (req, res) => {
         res.status(500).json({message:error.message}); 
     }
 });
+
+app.get("/caca", async (req, res) => { 
+    
+    try { 
+
+    const text = "SELECT * FROM productos";
+    const { rows } = await pool.query(text);
+    res.json(rows);
+
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({message:error.message}); 
+    }
+});
  
 
 const PORT = process.env.PORT || 5000;
