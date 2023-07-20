@@ -29,7 +29,9 @@ app.post("/registro", async (req, res) => {
         const hashContrasena = await bcrypt.hash(contrasena, 10);
         const text = "INSERT INTO usuarios (email, contrasena) VALUES ($1, $2) RETURNING *";
         const {rows} = await pool.query(text, [email, hashContrasena]);
-        res.json({rows});
+        const token = jwt.sign({email}, process.env.JWT_PASS);
+        res.json({rows, token});
+  
     } catch (error) {
         console.error(error,message);
         res.status(500).json({message: error.message});
