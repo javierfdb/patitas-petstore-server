@@ -81,7 +81,7 @@ app.get("/dashboard", verifyToken, async (req, res) => {
     }
 });
 
-app.get("/caca", async (req, res) => { 
+app.get("/tienda", async (req, res) => { 
     
     try { 
 
@@ -95,7 +95,7 @@ app.get("/caca", async (req, res) => {
     }
 });
 
-app.get("/caca/:id", async (req, res) => { 
+app.get("/detalle/:id", async (req, res) => { 
     const {id} = req.params;
     try { 
 
