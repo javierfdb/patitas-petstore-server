@@ -94,6 +94,20 @@ app.get("/caca", async (req, res) => {
         res.status(500).json({message:error.message}); 
     }
 });
+
+app.get("/caca/:id", async (req, res) => { 
+    const {id} = req.params;
+    try { 
+
+    const text = "SELECT * FROM productos WHERE id = $1";
+    const { rows } = await pool.query(text, [id]);
+    res.json(rows);
+
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({message:error.message}); 
+    }
+});
  
 
 const PORT = process.env.PORT || 5000;
