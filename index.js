@@ -20,35 +20,35 @@ app.use(express.json());
 app.use('/api', productRouter);
 
 app.post("/registro", async (req, res) => {
-    const {email, contrasena} = req.body;
+    const {correo, contrasena} = req.body;
 
     try {
-        if(!email || !contrasena) {
-            throw {message: "se necesita el email y la contraseña"};
+        if(!correo || !contrasena) {
+            throw {message: "se necesita el correo y la contraseña"};
         }
         const hashContrasena = await bcrypt.hash(contrasena, 10);
-        const text = "INSERT INTO usuarios (email, contrasena) VALUES ($1, $2) RETURNING *";
-        const {rows} = await pool.query(text, [email, hashContrasena]);
-        const token = jwt.sign({email}, process.env.JWT_PASS);
+        const text = "INSERT INTO usuarios (correo, contrasena) VALUES ($1, $2) RETURNING *";
+        const {rows} = await pool.query(text, [correo, hashContrasena]);
+        const token = jwt.sign({correo}, process.env.JWT_PASS);
         res.json({rows, token});
   
     } catch (error) {
-        console.error(error,message);
+        console.error(error, message);
         res.status(500).json({message: error.message});
     }
 });
 
 app.post("/ingresar", async (req, res) => { 
-    const {email, contrasena} = req.body;
+    const {correo, contrasena} = req.body;
     try {
-        if(!email || !contrasena) {
-            throw{message: "se necesita el email y la contraseña"};
+        if(!correo || !contrasena) {
+            throw{message: "se necesita el correo y la contraseña"};
         }
         //verificar credenciales
-        const text = "SELECT * FROM usuarios WHERE email = $1";
+        const text = "SELECT * FROM usuarios WHERE correo = $1";
         const {rows: [userDB],
              rowCount,
-            } = await pool.query(text, [email]); 
+            } = await pool.query(text, [correo]); 
 
         if(!rowCount) {
             throw{message: "No existe el usuario"};
@@ -59,7 +59,7 @@ app.post("/ingresar", async (req, res) => {
             throw{message: "Contraseña incorrecta"};
         }
         // generar jwt
-        const token = jwt.sign({email}, process.env.JWT_PASS);
+        const token = jwt.sign({correo}, process.env.JWT_PASS);
         res.json({token});
     } catch (error) {
         console.error(error.message);
@@ -71,8 +71,8 @@ app.get("/dashboard", verifyToken, async (req, res) => {
     
     try { 
 
-    const text = "SELECT * FROM usuarios WHERE email = $1";
-    const { rows } = await pool.query(text, [req.email]);
+    const text = "SELECT * FROM usuarios WHERE correo = $1";
+    const { rows } = await pool.query(text, [req.correo]);
     res.json(rows);
 
     } catch (error) {
@@ -108,6 +108,20 @@ app.get("/detalle/:id", async (req, res) => {
         res.status(500).json({message:error.message}); 
     }
 });
+
+// app.get("/dashboard/mis-publicaciones", verifyToken, async (req, res) => { 
+    
+//     try { 
+
+//     const text = "SELECT * FROM productos WHERE correo = $1";
+//     const { rows } = await pool.query(text, [req.correo]);
+//     res.json(rows);
+
+//     } catch (error) {
+//         console.error(error.message);
+//         res.status(500).json({message:error.message}); 
+//     }
+// });
  
 
 const PORT = process.env.PORT || 5000;
