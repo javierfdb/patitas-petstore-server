@@ -122,6 +122,24 @@ app.get("/dashboard/mis-publicaciones", verifyToken, async (req, res) => {
         res.status(500).json({message:error.message});  
     }
 });
+
+
+app.post("/dashboard/publicar", async (req, res) => {
+    const {titulo, descripcion, correo, imagen, precio, categoria, megusta} = req.body;
+
+    try {
+        if(!titulo || !descripcion || !correo || !imagen || !precio || !categoria || !megusta) {
+            throw {message: "se necesita el correo y la contraseña"};
+        }
+        const text = "INSERT INTO productos (titulo, descripcion, correo, imagen, precio, categoria, megusta) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *";
+        const {rows} = await pool.query(text, [titulo, descripcion, correo, imagen, precio, categoria, megusta]);
+        res.json({rows});
+  
+    } catch (error) {
+        console.error(error, message);
+        res.status(500).json({message: error.message});
+    }
+});
  
 
 const PORT = process.env.PORT || 5000;
