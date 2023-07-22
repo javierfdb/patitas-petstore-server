@@ -28,7 +28,6 @@ const getProductos = async ({ sort, limit, page, filters }) => {
               query += " AND ";
            }
         }
-        console.log(arrayValues);
      }
 
     if(sort) {

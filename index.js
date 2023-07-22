@@ -6,9 +6,9 @@ import express from 'express';
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
-
 import cors from 'cors';
-const app = express();
+
+export const app = express();
 
 import { verifyToken } from "./middlewares/verifyToken.js";
 
@@ -26,12 +26,13 @@ app.post("/registro", async (req, res) => {
         if(!correo || !contrasena) {
             throw {message: "se necesita el correo y la contraseña"};
         }
+
         const hashContrasena = await bcrypt.hash(contrasena, 10);
         const text = "INSERT INTO usuarios (correo, contrasena) VALUES ($1, $2) RETURNING *";
         const {rows} = await pool.query(text, [correo, hashContrasena]);
         const token = jwt.sign({correo}, process.env.JWT_PASS);
-        res.json({rows, token});
-  
+        res.status(201).json({rows, token});
+        
     } catch (error) {
         console.error(error, message);
         res.status(500).json({message: error.message});
@@ -44,7 +45,6 @@ app.post("/ingresar", async (req, res) => {
         if(!correo || !contrasena) {
             throw{message: "se necesita el correo y la contraseña"};
         }
-        //verificar credenciales
         const text = "SELECT * FROM usuarios WHERE correo = $1";
         const {rows: [userDB],
              rowCount,
@@ -58,7 +58,6 @@ app.post("/ingresar", async (req, res) => {
         if(!verifyPass) {
             throw{message: "Contraseña incorrecta"};
         }
-        // generar jwt
         const token = jwt.sign({correo}, process.env.JWT_PASS);
         res.json({token});
     } catch (error) {
@@ -82,9 +81,7 @@ app.get("/dashboard", verifyToken, async (req, res) => {
 });
 
 app.get("/tienda", async (req, res) => { 
-    
     try { 
-
     const text = "SELECT * FROM productos";
     const { rows } = await pool.query(text);
     res.json(rows);
@@ -118,11 +115,10 @@ app.get("/dashboard/mis-publicaciones", verifyToken, async (req, res) => {
     res.json(rows);
 
     } catch (error) {
-        console.error(error.message);
-        res.status(500).json({message:error.message});  
+        // console.error(error.message);
+        res.status(500).json({error});  
     }
 });
-
 
 app.post("/dashboard/publicar", async (req, res) => {
     const {titulo, descripcion, correo, imagen, precio, categoria, megusta} = req.body;
@@ -141,7 +137,6 @@ app.post("/dashboard/publicar", async (req, res) => {
     }
 });
  
-
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {

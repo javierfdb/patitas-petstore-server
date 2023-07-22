@@ -10,12 +10,10 @@ export const verifyToken = (req, res, next) => {
         }
         const token = bearerHeaders.split(" ")[1];
         const payload = jwt.verify(token, process.env.JWT_PASS); 
-
         req.correo = payload.correo;
-
         next();
     } catch (error) {
-        console.error(error.message);
+        // console.error(error.message);
         res.status(500).json({message:error.message}); 
     }
 };
