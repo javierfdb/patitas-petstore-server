@@ -109,19 +109,19 @@ app.get("/detalle/:id", async (req, res) => {
     }
 });
 
-// app.get("/dashboard/mis-publicaciones", verifyToken, async (req, res) => { 
+app.get("/dashboard/mis-publicaciones", verifyToken, async (req, res) => { 
     
-//     try { 
+    try { 
 
-//     const text = "SELECT * FROM productos WHERE correo = $1";
-//     const { rows } = await pool.query(text, [req.correo]);
-//     res.json(rows);
+    const text = "SELECT * FROM productos WHERE correo = $1";
+    const { rows } = await pool.query(text, [req.correo]);
+    res.json(rows);
 
-//     } catch (error) {
-//         console.error(error.message);
-//         res.status(500).json({message:error.message}); 
-//     }
-// });
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({message:error.message});  
+    }
+});
  
 
 const PORT = process.env.PORT || 5000;
