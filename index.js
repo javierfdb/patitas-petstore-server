@@ -17,7 +17,7 @@ import productRouter from './routes/product.route.js';
 app.use(cors());
 app.use(express.json());
 
-app.use('/api', productRouter);
+app.use('/', productRouter); // acá saque lo de api
 
 app.post("/registro", async (req, res) => {
     const {correo, contrasena} = req.body;

@@ -3,10 +3,10 @@ import {productosModelo} from "../models/product.model.js";
 
 
 const getAllProducts = async (req, res) => {
-    const {sort, limit = 6, page = 1, filters } = req.query;
+    const {sort, limit = 20, page = 1, filters } = req.query;
     try {
         const resultado =  await productosModelo.getProductos({ sort, limit, page, filters });
-        return res.json({resultado});
+        return res.json(resultado);
       } catch (error) {
         console.log(error);
         const { status, message } = handleErrors(error.code);

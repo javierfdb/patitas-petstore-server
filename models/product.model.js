@@ -28,6 +28,7 @@ const getProductos = async ({ sort, limit, page, filters }) => {
               query += " AND ";
            }
         }
+
      }
 
     if(sort) {
@@ -60,17 +61,17 @@ const getOneProduct = async(id) => {
     return rows[0];
 }
 
-const crearProducto = async({titulo, descripcion, precio, imagen}) => {
-    const datosProducto = "INSERT INTO productos (titulo, descripcion, precio, imagen) values ($1, $2, $3, $4) RETURNING *";
-    const {rows}= await pool.query(datosProducto, [titulo, descripcion, precio, imagen]);
+const crearProducto = async({titulo, descripcion, correo, imagen, precio, categoria, megusta}) => {
+    const datosProducto = "INSERT INTO productos (titulo, descripcion, correo, imagen, precio, categoria, megusta) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *";
+    const {rows}= await pool.query(datosProducto, [titulo, descripcion, correo, imagen, precio, categoria, megusta]);
     return rows[0];
 }
 
-const update = async (id, {titulo, descripcion, precio, imagen} ) => {
-    if (!titulo || !descripcion || !precio || !imagen  ) {
+const update = async (id, {titulo, descripcion, correo, imagen, precio, categoria, megusta} ) => {
+    if (!titulo || !descripcion || !correo || !imagen || !precio || !categoria || !megusta  ) {
         throw { code: "400" }; 
     }
-    const sentencia = "UPDATE productos SET titulo = $1, descripcion = $2, precio = $3, imagen = $4 WHERE id = $5 RETURNING *"
+    const sentencia = "UPDATE productos SET titulo = $1, descripcion = $2, correo = $3, imagen = $4, precio = $5, megusta = $6, WHERE id = $5 RETURNING *"
     const {rows} = await pool.query(sentencia,[titulo, descripcion, precio, imagen, id]);
     return rows[0];
 }
