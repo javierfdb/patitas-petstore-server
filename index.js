@@ -116,7 +116,7 @@ app.get("/dashboard/mis-publicaciones", verifyToken, async (req, res) => {
 
     } catch (error) {
         // console.error(error.message);
-        res.status(500).json({error});  
+        res.status(500).json(error);  
     }
 });
 
@@ -132,8 +132,8 @@ app.post("/dashboard/publicar", async (req, res) => {
         res.json({rows});
   
     } catch (error) {
-        console.error(error, message);
-        res.status(500).json({message: error.message});
+        console.error(error);
+        res.status(500).json({message: error});
     }
 });
  
