@@ -26,6 +26,14 @@ app.post("/registro", async (req, res) => {
         if(!correo || !contrasena) {
             throw {message: "se necesita el correo y la contraseña"};
         }
+        const check_email_exist = "SELECT * FROM usuarios WHERE correo = $1";
+        const {rows: [userDB],
+             rowCount,
+            } = await pool.query(check_email_exist, [correo]); 
+
+        if(rowCount) {
+            throw{message: `El correo ${correo} ya está registrado`};
+        }
 
         const hashContrasena = await bcrypt.hash(contrasena, 10);
         const text = "INSERT INTO usuarios (correo, contrasena) VALUES ($1, $2) RETURNING *";
@@ -34,8 +42,8 @@ app.post("/registro", async (req, res) => {
         res.status(201).json({rows, token});
         
     } catch (error) {
-        console.error(error, message);
-        res.status(500).json({message: error.message});
+        console.error(error);
+        res.status(500).json(error);
     }
 });
 
