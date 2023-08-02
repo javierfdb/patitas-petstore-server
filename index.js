@@ -77,7 +77,7 @@ app.post("/ingresar", async (req, res) => {
 app.get("/dashboard", verifyToken, async (req, res) => { 
     
     try { 
-
+        
     const text = "SELECT * FROM usuarios WHERE correo = $1";
     const { rows } = await pool.query(text, [req.correo]);
     res.json(rows);
