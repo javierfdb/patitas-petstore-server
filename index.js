@@ -32,7 +32,7 @@ app.post("/registro", async (req, res) => {
             } = await pool.query(check_email_exist, [correo]); 
 
         if(rowCount) {
-            throw{message: `El correo ${correo} ya está registrado`};
+            throw{message: `El email ${correo} ya está registrado`};
         }
 
         const hashContrasena = await bcrypt.hash(contrasena, 10);
@@ -51,7 +51,7 @@ app.post("/ingresar", async (req, res) => {
     const {correo, contrasena} = req.body;
     try {
         if(!correo || !contrasena) {
-            throw{message: "se necesita el correo y la contraseña"};
+            throw{message: "se necesita el email y la contraseña"};
         }
         const text = "SELECT * FROM usuarios WHERE correo = $1";
         const {rows: [userDB],
